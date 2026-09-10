@@ -1,0 +1,51 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+h1 {
+  line-height: 1.2;
+  margin: 0;
+}
+
+textarea {
+  width: 100%;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border, #ccc);
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+canvas {
+  border: 1px solid var(--border, #ccc);
+  border-radius: 6px;
+}
+
+button {
+  font-size: 16px;
+  padding: 8px 20px;
+  border-radius: 6px;
+  border: none;
+  background: #1a73e8;
+  color: white;
+  cursor: pointer;
+}
+
+button:disabled {
+  background: #999;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #d32f2f;
+  font-size: 14px;
+  margin: 0;
+}
