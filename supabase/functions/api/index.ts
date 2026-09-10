@@ -38,6 +38,16 @@ async function authenticate(req: Request, supabase: ReturnType<typeof getService
     return { error: json({ error: 'Invalid API key' }, 401) }
   }
 
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('plan_tier')
+    .eq('id', apiKey.owner_id)
+    .maybeSingle()
+
+  if (profile?.plan_tier !== 'pro') {
+    return { error: json({ error: 'The developer API requires a Pro plan. Upgrade at /dashboard.' }, 403) }
+  }
+
   return { apiKey }
 }
 

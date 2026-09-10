@@ -3,6 +3,8 @@ import { Link } from 'react-router'
 import { supabase } from '../lib/supabaseClient'
 import { generateApiKey, hashApiKey } from '../lib/apiKey'
 import { useSession } from '../lib/useSession'
+import { useProfile } from '../lib/useProfile'
+import UpgradeCard from '../components/UpgradeCard'
 
 interface ApiKeyRow {
   id: string
@@ -15,6 +17,7 @@ interface ApiKeyRow {
 
 function ApiKeys() {
   const { session } = useSession()
+  const { isPro, loading: profileLoading } = useProfile()
   const [keys, setKeys] = useState<ApiKeyRow[]>([])
   const [name, setName] = useState('')
   const [creating, setCreating] = useState(false)
@@ -81,17 +84,21 @@ function ApiKeys() {
           </div>
         )}
 
-        <form onSubmit={handleCreate} className="form row">
-          <input
-            type="text"
-            placeholder="Key name (optional)"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <button type="submit" disabled={creating}>
-            {creating ? 'Creating...' : 'Create API key'}
-          </button>
-        </form>
+        {!profileLoading && !isPro ? (
+          <UpgradeCard reason="The developer API is a Pro feature." />
+        ) : (
+          <form onSubmit={handleCreate} className="form row">
+            <input
+              type="text"
+              placeholder="Key name (optional)"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <button type="submit" disabled={creating}>
+              {creating ? 'Creating...' : 'Create API key'}
+            </button>
+          </form>
+        )}
 
         {keys.length === 0 ? (
           <p className="subtitle">No API keys yet.</p>

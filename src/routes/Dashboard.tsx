@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router'
+import { Link, useSearchParams } from 'react-router'
 import { supabase } from '../lib/supabaseClient'
 import { randomShortId } from '../lib/shortId'
 import { useSession } from '../lib/useSession'
+import { useProfile } from '../lib/useProfile'
+import UpgradeCard from '../components/UpgradeCard'
+
+const FREE_QR_LIMIT = 3
 
 interface QrCode {
   id: string
@@ -15,6 +19,8 @@ interface QrCode {
 
 function Dashboard() {
   const { session } = useSession()
+  const { isPro, loading: profileLoading } = useProfile()
+  const [searchParams] = useSearchParams()
   const [codes, setCodes] = useState<QrCode[]>([])
   const [loading, setLoading] = useState(true)
   const [destinationUrl, setDestinationUrl] = useState('')
@@ -35,9 +41,11 @@ function Dashboard() {
     loadCodes()
   }, [])
 
+  const atLimit = !isPro && codes.length >= FREE_QR_LIMIT
+
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!session) return
+    if (!session || atLimit) return
     setCreating(true)
     setError(null)
 
@@ -80,25 +88,39 @@ function Dashboard() {
           <p className="subtitle">{session?.user.email}</p>
         </div>
 
-        <form onSubmit={handleCreate} className="form row">
-          <input
-            type="url"
-            required
-            placeholder="https://your-destination.com"
-            value={destinationUrl}
-            onChange={(e) => setDestinationUrl(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Label (optional)"
-            value={label}
-            onChange={(e) => setLabel(e.target.value)}
-          />
-          <button type="submit" disabled={creating}>
-            {creating ? 'Creating...' : 'Create dynamic QR'}
-          </button>
-        </form>
+        {searchParams.get('upgraded') === '1' && (
+          <p className="success">You're on Pro! Unlimited QR codes and API access are unlocked.</p>
+        )}
+
+        {!profileLoading && atLimit ? (
+          <UpgradeCard reason={`You've used all ${FREE_QR_LIMIT} free dynamic QR codes.`} />
+        ) : (
+          <form onSubmit={handleCreate} className="form row">
+            <input
+              type="url"
+              required
+              placeholder="https://your-destination.com"
+              value={destinationUrl}
+              onChange={(e) => setDestinationUrl(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Label (optional)"
+              value={label}
+              onChange={(e) => setLabel(e.target.value)}
+            />
+            <button type="submit" disabled={creating}>
+              {creating ? 'Creating...' : 'Create dynamic QR'}
+            </button>
+          </form>
+        )}
         {error && <p className="error">{error}</p>}
+
+        {!isPro && !profileLoading && (
+          <p className="subtitle">
+            {codes.length} / {FREE_QR_LIMIT} free QR codes used
+          </p>
+        )}
 
         {loading ? (
           <p>Loading...</p>

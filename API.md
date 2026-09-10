@@ -1,7 +1,8 @@
 # Developer API
 
-Create and manage dynamic QR codes programmatically. Generate an API key from
-`/dashboard/api-keys` after signing in, then send it as a bearer token.
+Create and manage dynamic QR codes programmatically. **Requires a Pro plan** —
+generate an API key from `/dashboard/api-keys` after upgrading, then send it
+as a bearer token. Free-tier keys receive `403`.
 
 Base URL: `https://<your-project-ref>.supabase.co/functions/v1/api`
 

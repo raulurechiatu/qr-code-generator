@@ -7,9 +7,6 @@ function Footer() {
       <div className="footer-links">
         <Link to="/privacy">Privacy Policy</Link>
         <Link to="/terms">Terms of Service</Link>
-        <a href="https://github.com/raulurechiatu/qr-code-generator" target="_blank" rel="noreferrer">
-          GitHub
-        </a>
       </div>
     </footer>
   )

@@ -378,6 +378,10 @@ verify_jwt = false
 # Developer API: authenticates with our own API keys, not a Supabase JWT.
 verify_jwt = false
 
+[functions.stripe-webhook]
+# Called directly by Stripe: no Supabase JWT, verified via Stripe-Signature instead.
+verify_jwt = false
+
 [edge_runtime]
 enabled = true
 # Supported request policies: `oneshot`, `per_worker`.

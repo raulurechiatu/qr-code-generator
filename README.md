@@ -1,13 +1,15 @@
 # QR Code Generator
 
-A QR code generator with two tiers:
+A QR code generator with three tiers:
 
 - **Static generator** (`/`) — free, no account needed. Enter text or a URL,
   get a QR code, download the PNG.
 - **Dynamic QR codes** (`/dashboard`, behind sign-in) — QR codes that redirect
   through a short link you control, so the destination can be edited after
   the code is printed, with scan analytics (count, device, browser, over
-  time). Also exposed as a [developer API](API.md) with API keys.
+  time). Free accounts get up to 3 dynamic QR codes.
+- **Pro** — a one-time $19 purchase (Stripe Checkout) unlocks unlimited
+  dynamic QR codes and the [developer API](API.md).
 
 ## Stack
 
@@ -38,23 +40,46 @@ Vite + React + TypeScript on the frontend, [Supabase](https://supabase.com)
    npx supabase db push
    ```
 
-4. Deploy the Edge Functions (the public redirect handler and the developer
-   API), and set the service-role secret they need:
+4. Deploy the Edge Functions. `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`
+   are auto-injected into every function by Supabase — don't set them
+   yourself (`supabase secrets set` rejects any name starting with
+   `SUPABASE_`). The public-facing functions (`redirect`, `api`,
+   `stripe-webhook`) need JWT verification disabled since their callers never
+   carry a Supabase session:
 
    ```bash
-   npx supabase functions deploy redirect
-   npx supabase functions deploy api
-   npx supabase secrets set SUPABASE_SERVICE_ROLE_KEY=<your-service-role-key>
+   npx supabase functions deploy redirect --no-verify-jwt
+   npx supabase functions deploy api --no-verify-jwt
+   npx supabase functions deploy stripe-webhook --no-verify-jwt
+   npx supabase functions deploy create-checkout-session
    ```
-
-   The service-role key is found in Project Settings → API. Never put it in
-   `.env.local` or any frontend code — it belongs only to the Edge Functions.
 
 5. In Supabase Auth settings, make sure email OTP / magic link sign-in is
    enabled (it is by default), and add your local dev URL
    (`http://localhost:5173`) to the redirect URL allow-list.
 
-6. Run the app:
+6. Set up billing (only needed for the Pro upgrade flow — the app works
+   without it, just without a way to upgrade). Get your Stripe **secret key**
+   from Developers → API keys, then:
+
+   ```bash
+   npx supabase secrets set STRIPE_SECRET_KEY=<your-stripe-secret-key>
+   ```
+
+   Register the webhook endpoint (returns a signing secret, shown only once):
+
+   ```bash
+   curl -X POST https://api.stripe.com/v1/webhook_endpoints \
+     -u "<your-stripe-secret-key>:" \
+     -d "url=https://<your-project-ref>.supabase.co/functions/v1/stripe-webhook" \
+     -d "enabled_events[]=checkout.session.completed"
+   ```
+
+   ```bash
+   npx supabase secrets set STRIPE_WEBHOOK_SECRET=<the-secret-from-the-response>
+   ```
+
+7. Run the app:
 
    ```bash
    npm run dev
