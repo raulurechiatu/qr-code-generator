@@ -72,22 +72,12 @@ function Dashboard() {
     setCreating(false)
   }
 
-  const handleSignOut = () => supabase.auth.signOut()
-
   return (
     <div className="app">
       <div className="card wide">
-        <div className="card-header row">
-          <div>
-            <h1>Your QR codes</h1>
-            <p className="subtitle">{session?.user.email}</p>
-          </div>
-          <div className="header-actions">
-            <Link to="/dashboard/api-keys">API keys</Link>
-            <button type="button" onClick={handleSignOut} className="secondary">
-              Sign out
-            </button>
-          </div>
+        <div className="card-header">
+          <h1>Your QR codes</h1>
+          <p className="subtitle">{session?.user.email}</p>
         </div>
 
         <form onSubmit={handleCreate} className="form row">
