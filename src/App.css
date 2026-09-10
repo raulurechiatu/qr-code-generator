@@ -521,6 +521,74 @@ button.secondary {
   margin: 0 0 16px;
 }
 
+.range-picker {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.range-option {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+}
+
+.range-option.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.range-option.locked {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.stat-block {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.stat-block h4 {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.breakdown-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.breakdown-list li {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-h);
+}
+
+.breakdown-list li span:last-child {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
 .success {
   color: #1a9e5c;
   background: rgba(26, 158, 92, 0.1);
