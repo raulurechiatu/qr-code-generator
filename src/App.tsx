@@ -1,70 +1,42 @@
-import { useEffect, useRef, useState } from 'react'
-import QRCode from 'qrcode'
+import { Route, Routes } from 'react-router'
+import StaticGenerator from './routes/StaticGenerator'
+import Login from './routes/Login'
+import Dashboard from './routes/Dashboard'
+import QrDetail from './routes/QrDetail'
+import ApiKeys from './routes/ApiKeys'
+import RequireAuth from './components/RequireAuth'
 import './App.css'
 
 function App() {
-  const [text, setText] = useState('https://example.com')
-  const [error, setError] = useState<string | null>(null)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    if (!text.trim()) {
-      const ctx = canvas.getContext('2d')
-      ctx?.clearRect(0, 0, canvas.width, canvas.height)
-      setError(null)
-      return
-    }
-
-    QRCode.toCanvas(
-      canvas,
-      text,
-      { width: 260, margin: 2, color: { dark: '#1a1a2e', light: '#ffffff' } },
-      (err) => {
-        setError(err ? err.message : null)
-      },
-    )
-  }, [text])
-
-  const handleDownload = () => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const link = document.createElement('a')
-    link.download = 'qrcode.png'
-    link.href = canvas.toDataURL('image/png')
-    link.click()
-  }
-
-  const hasContent = !!text.trim()
-
   return (
-    <div className="app">
-      <div className="card">
-        <div className="card-header">
-          <h1>QR Code Generator</h1>
-          <p className="subtitle">Turn any text or link into a scannable code</p>
-        </div>
-
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Enter text or URL"
-          rows={3}
-        />
-        {error && <p className="error">{error}</p>}
-
-        <div className={`qr-frame ${!hasContent || error ? 'empty' : ''}`}>
-          <canvas ref={canvasRef} width={260} height={260} />
-          {!hasContent && <span className="qr-placeholder">Your QR code appears here</span>}
-        </div>
-
-        <button type="button" onClick={handleDownload} disabled={!hasContent || !!error}>
-          Download PNG
-        </button>
-      </div>
-    </div>
+    <Routes>
+      <Route path="/" element={<StaticGenerator />} />
+      <Route path="/login" element={<Login />} />
+      <Route
+        path="/dashboard"
+        element={
+          <RequireAuth>
+            <Dashboard />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/dashboard/qr/:id"
+        element={
+          <RequireAuth>
+            <QrDetail />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/dashboard/api-keys"
+        element={
+          <RequireAuth>
+            <ApiKeys />
+          </RequireAuth>
+        }
+      />
+    </Routes>
   )
 }
 

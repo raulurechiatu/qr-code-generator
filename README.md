@@ -1,32 +1,73 @@
-# React + TypeScript + Vite
+# QR Code Generator
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A QR code generator with two tiers:
 
-Currently, two official plugins are available:
+- **Static generator** (`/`) — free, no account needed. Enter text or a URL,
+  get a QR code, download the PNG.
+- **Dynamic QR codes** (`/dashboard`, behind sign-in) — QR codes that redirect
+  through a short link you control, so the destination can be edited after
+  the code is printed, with scan analytics (count, device, browser, over
+  time). Also exposed as a [developer API](API.md) with API keys.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Stack
 
-## React Compiler
+Vite + React + TypeScript on the frontend, [Supabase](https://supabase.com)
+(Postgres, Auth, Edge Functions) for the backend.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Local setup
 
-## Expanding the Oxlint configuration
+1. Install dependencies:
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+   ```bash
+   npm install
+   ```
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
+2. Create a Supabase project at [supabase.com](https://supabase.com), then
+   copy `.env.example` to `.env.local` and fill in your project's URL and
+   anon key (Project Settings → API):
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+   ```bash
+   cp .env.example .env.local
+   ```
+
+3. Apply the database schema. With the [Supabase CLI](https://supabase.com/docs/guides/cli):
+
+   ```bash
+   npx supabase login
+   npx supabase link --project-ref <your-project-ref>
+   npx supabase db push
+   ```
+
+4. Deploy the Edge Functions (the public redirect handler and the developer
+   API), and set the service-role secret they need:
+
+   ```bash
+   npx supabase functions deploy redirect
+   npx supabase functions deploy api
+   npx supabase secrets set SUPABASE_SERVICE_ROLE_KEY=<your-service-role-key>
+   ```
+
+   The service-role key is found in Project Settings → API. Never put it in
+   `.env.local` or any frontend code — it belongs only to the Edge Functions.
+
+5. In Supabase Auth settings, make sure email OTP / magic link sign-in is
+   enabled (it is by default), and add your local dev URL
+   (`http://localhost:5173`) to the redirect URL allow-list.
+
+6. Run the app:
+
+   ```bash
+   npm run dev
+   ```
+
+## Scripts
+
+- `npm run dev` — start the Vite dev server
+- `npm run build` — type-check and build for production
+- `npm run lint` — run oxlint
+- `npm run preview` — preview a production build locally
+
+## API
+
+See [API.md](API.md) for the developer API reference (create/update dynamic
+QR codes, fetch analytics, authenticate with an API key).
