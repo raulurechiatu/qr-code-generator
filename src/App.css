@@ -58,12 +58,18 @@
 .app {
   flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 32px 20px;
   background:
     radial-gradient(circle at 15% 10%, var(--accent-bg), transparent 45%),
     radial-gradient(circle at 85% 90%, var(--accent-bg), transparent 45%);
+}
+
+.app.home {
+  justify-content: flex-start;
+  gap: 48px;
 }
 
 .card {
@@ -365,4 +371,104 @@ button.secondary {
   background: var(--bg);
   padding: 8px 10px;
   border-radius: 8px;
+}
+
+.content-sections {
+  width: 100%;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding-bottom: 24px;
+}
+
+.content-sections h2 {
+  font-size: 20px;
+  margin: 0 0 12px;
+}
+
+.content-sections p {
+  color: var(--text);
+  line-height: 1.6;
+  margin: 0 0 12px;
+}
+
+.content-sections ul {
+  color: var(--text);
+  line-height: 1.7;
+  padding-left: 20px;
+  margin: 0;
+}
+
+.content-sections details {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+
+.content-sections summary {
+  font-weight: 600;
+  color: var(--text-h);
+  cursor: pointer;
+}
+
+.content-sections details p {
+  margin: 10px 0 0;
+}
+
+.article {
+  align-items: stretch;
+  text-align: left;
+  max-width: 640px;
+}
+
+.article h1 {
+  font-size: 28px;
+  margin: 8px 0 0;
+}
+
+.article h2 {
+  font-size: 18px;
+  margin: 0 0 8px;
+}
+
+.article section {
+  margin-top: 24px;
+}
+
+.article p,
+.article li {
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.article a {
+  color: var(--accent);
+}
+
+.site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 20px 24px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text);
+}
+
+.footer-links {
+  display: flex;
+  gap: 16px;
+}
+
+.footer-links a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  color: var(--text-h);
 }
