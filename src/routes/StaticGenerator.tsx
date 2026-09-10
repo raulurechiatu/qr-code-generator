@@ -1,11 +1,40 @@
 import { useEffect, useRef, useState } from 'react'
 import QRCode from 'qrcode'
 import { Link } from 'react-router'
+import { useDocumentMeta } from '../lib/useDocumentMeta'
+
+const FAQ = [
+  {
+    question: 'Is this free to use?',
+    answer:
+      'Yes. The generator above is free, with no account, no watermark, and no scan limit — the QR code is generated entirely in your browser.',
+  },
+  {
+    question: 'Do QR codes expire?',
+    answer:
+      'A static QR code (the one above) never expires — it directly encodes your text or link, so it works for as long as that content stays valid. A dynamic QR code (sign in to create one) points to a short link we host, which lets you change the destination later, even after the code is printed.',
+  },
+  {
+    question: "What's the difference between a static and dynamic QR code?",
+    answer:
+      "A static code bakes your text or URL directly into the pattern — simple and permanent. A dynamic code encodes a short redirect link instead, so you can edit where it points and see scan analytics (count, device, time) after it's already printed and in circulation.",
+  },
+  {
+    question: 'What image size and format can I download?',
+    answer:
+      'The generator downloads a 260×260 PNG, suitable for most print and digital uses. For very large prints, scale it up in an image editor — QR codes remain scannable at larger sizes since they are simple black-and-white patterns.',
+  },
+]
 
 function StaticGenerator() {
   const [text, setText] = useState('https://example.com')
   const [error, setError] = useState<string | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  useDocumentMeta(
+    'Free QR Code Generator — Create, Customize & Track QR Codes',
+    'Generate a QR code for free in seconds — no account needed. Turn any link or text into a scannable code and download it as a PNG.',
+  )
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -27,6 +56,24 @@ function StaticGenerator() {
       },
     )
   }, [text])
+
+  useEffect(() => {
+    const script = document.createElement('script')
+    script.type = 'application/ld+json'
+    script.text = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: FAQ.map((item) => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: { '@type': 'Answer', text: item.answer },
+      })),
+    })
+    document.head.appendChild(script)
+    return () => {
+      document.head.removeChild(script)
+    }
+  }, [])
 
   const handleDownload = () => {
     const canvas = canvasRef.current
@@ -111,43 +158,12 @@ function StaticGenerator() {
 
         <section>
           <h2>Frequently asked questions</h2>
-
-          <details>
-            <summary>Is this free to use?</summary>
-            <p>
-              Yes. The generator above is free, with no account, no watermark, and no scan
-              limit — the QR code is generated entirely in your browser.
-            </p>
-          </details>
-
-          <details>
-            <summary>Do QR codes expire?</summary>
-            <p>
-              A static QR code (the one above) never expires — it directly encodes your text
-              or link, so it works for as long as that content stays valid. A{' '}
-              <Link to="/login">dynamic QR code</Link> points to a short link we host, which
-              lets you change the destination later, even after the code is printed.
-            </p>
-          </details>
-
-          <details>
-            <summary>What's the difference between a static and dynamic QR code?</summary>
-            <p>
-              A static code bakes your text or URL directly into the pattern — simple and
-              permanent. A dynamic code encodes a short redirect link instead, so you can
-              edit where it points and see scan analytics (count, device, time) after it's
-              already printed and in circulation.
-            </p>
-          </details>
-
-          <details>
-            <summary>What image size and format can I download?</summary>
-            <p>
-              The generator downloads a 260&times;260 PNG, suitable for most print and digital
-              uses. For very large prints, scale it up in an image editor — QR codes remain
-              scannable at larger sizes since they're simple black-and-white patterns.
-            </p>
-          </details>
+          {FAQ.map((item) => (
+            <details key={item.question}>
+              <summary>{item.question}</summary>
+              <p>{item.answer}</p>
+            </details>
+          ))}
         </section>
       </div>
     </div>

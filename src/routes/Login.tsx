@@ -2,12 +2,15 @@ import { useState } from 'react'
 import { Navigate } from 'react-router'
 import { supabase } from '../lib/supabaseClient'
 import { useSession } from '../lib/useSession'
+import { useDocumentMeta } from '../lib/useDocumentMeta'
 
 function Login() {
   const { session, loading } = useSession()
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+  useDocumentMeta('Sign in — QR Generator')
 
   if (!loading && session) return <Navigate to="/dashboard" replace />
 

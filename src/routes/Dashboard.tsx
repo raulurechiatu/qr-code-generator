@@ -5,6 +5,7 @@ import { randomShortId } from '../lib/shortId'
 import { useSession } from '../lib/useSession'
 import { useProfile } from '../lib/useProfile'
 import UpgradeCard from '../components/UpgradeCard'
+import { useDocumentMeta } from '../lib/useDocumentMeta'
 
 const FREE_QR_LIMIT = 3
 
@@ -27,6 +28,8 @@ function Dashboard() {
   const [label, setLabel] = useState('')
   const [creating, setCreating] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  useDocumentMeta('Your QR codes — QR Generator')
 
   const loadCodes = async () => {
     const { data } = await supabase

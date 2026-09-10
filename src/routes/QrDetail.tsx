@@ -13,6 +13,7 @@ import {
 import { supabase, functionsBaseUrl } from '../lib/supabaseClient'
 import { useProfile } from '../lib/useProfile'
 import UpgradeCard from '../components/UpgradeCard'
+import { useDocumentMeta } from '../lib/useDocumentMeta'
 
 const FREE_RANGE_DAYS = 7
 const RANGE_OPTIONS: { label: string; days: number | null }[] = [
@@ -75,6 +76,8 @@ function QrDetail() {
 
   const redirectUrl = qrCode ? `${functionsBaseUrl}/redirect/${qrCode.short_id}` : ''
   const effectiveRangeDays = isPro ? rangeDays : FREE_RANGE_DAYS
+
+  useDocumentMeta(qrCode ? `${qrCode.label || qrCode.short_id} — QR Generator` : 'QR code — QR Generator')
 
   const loadScans = async () => {
     let query = supabase

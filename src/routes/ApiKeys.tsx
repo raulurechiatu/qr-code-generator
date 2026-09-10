@@ -5,6 +5,7 @@ import { generateApiKey, hashApiKey } from '../lib/apiKey'
 import { useSession } from '../lib/useSession'
 import { useProfile } from '../lib/useProfile'
 import UpgradeCard from '../components/UpgradeCard'
+import { useDocumentMeta } from '../lib/useDocumentMeta'
 
 interface ApiKeyRow {
   id: string
@@ -22,6 +23,8 @@ function ApiKeys() {
   const [name, setName] = useState('')
   const [creating, setCreating] = useState(false)
   const [newRawKey, setNewRawKey] = useState<string | null>(null)
+
+  useDocumentMeta('API keys — QR Generator')
 
   const loadKeys = async () => {
     const { data } = await supabase

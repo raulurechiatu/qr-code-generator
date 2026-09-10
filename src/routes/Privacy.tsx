@@ -1,6 +1,12 @@
 import { Link } from 'react-router'
+import { useDocumentMeta } from '../lib/useDocumentMeta'
 
 function Privacy() {
+  useDocumentMeta(
+    'Privacy Policy — QR Generator',
+    'How QR Generator collects, uses, and stores data for the static generator, dynamic QR codes, and developer API.',
+  )
+
   return (
     <div className="app">
       <article className="card wide article">

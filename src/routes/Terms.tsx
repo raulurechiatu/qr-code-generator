@@ -1,6 +1,12 @@
 import { Link } from 'react-router'
+import { useDocumentMeta } from '../lib/useDocumentMeta'
 
 function Terms() {
+  useDocumentMeta(
+    'Terms of Service — QR Generator',
+    'The terms for using QR Generator’s free static tool, dynamic QR codes, and developer API.',
+  )
+
   return (
     <div className="app">
       <article className="card wide article">
