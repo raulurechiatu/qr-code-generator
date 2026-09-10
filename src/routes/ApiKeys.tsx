@@ -63,7 +63,7 @@ function ApiKeys() {
   }
 
   return (
-    <div className="app">
+    <div className="app with-content">
       <div className="card wide">
         <Link to="/dashboard" className="back-link">
           &larr; Back
@@ -122,6 +122,93 @@ function ApiKeys() {
             ))}
           </ul>
         )}
+      </div>
+
+      <div className="content-sections">
+        <section>
+          <h2>How it works</h2>
+          <p>
+            An API key lets your own code create and manage dynamic QR codes without using
+            this dashboard. Each key is tied to your account, so any QR code it creates
+            belongs to you and shows up here and on your{' '}
+            <Link to="/dashboard">dashboard</Link>. Keys are stored as a one-way hash — we
+            never keep the raw key after it's shown to you once at creation, so if you lose
+            it, revoke it and create a new one rather than trying to recover it.
+          </p>
+          <p>
+            The API is a <strong>Pro feature</strong>: it requires the one-time upgrade, since
+            it's meant for people building something on top of dynamic QR codes rather than
+            creating one or two by hand.
+          </p>
+        </section>
+
+        <section>
+          <h2>Walkthrough</h2>
+          <p>
+            <strong>1. Create a key.</strong> Use the form above — give it a name if you're
+            planning to have more than one (e.g. one per app or environment), then copy the
+            key immediately. It won't be shown again.
+          </p>
+          <p>
+            <strong>2. Create a dynamic QR code from your own code.</strong>
+          </p>
+          <pre className="code-block">
+{`curl -X POST https://<project-ref>.supabase.co/functions/v1/api \\
+  -H "Authorization: Bearer <your-api-key>" \\
+  -H "Content-Type: application/json" \\
+  -d '{"destination_url": "https://example.com", "label": "My QR"}'`}
+          </pre>
+          <p>
+            The response includes a <code>redirect_url</code> — encode that as a QR code
+            image (any QR library works, since it's just a URL) and it will redirect to
+            <code>destination_url</code> when scanned.
+          </p>
+          <p>
+            <strong>3. Update the destination later, or pull analytics</strong> using the same
+            key — see <code>API.md</code> in the project repository for the full endpoint
+            list.
+          </p>
+        </section>
+
+        <section>
+          <h2>Frequently asked questions</h2>
+
+          <details>
+            <summary>What happens if I lose my key?</summary>
+            <p>
+              We can't show it to you again — we only store a hash of it, the same way a
+              password would be stored. Revoke the lost key here and create a new one; any QR
+              codes it already created are unaffected and stay under your account.
+            </p>
+          </details>
+
+          <details>
+            <summary>What do the error responses mean?</summary>
+            <p>
+              <code>401</code> means the key is missing, wrong, or has been revoked.{' '}
+              <code>403</code> means the key is valid but the account isn't on Pro.{' '}
+              <code>429</code> means you've exceeded the rate limit (60 requests/minute by
+              default) — wait a minute and retry.
+            </p>
+          </details>
+
+          <details>
+            <summary>Can I have more than one key?</summary>
+            <p>
+              Yes — create as many as you like, for example separate keys per app or
+              environment, so you can revoke one without affecting the others.
+            </p>
+          </details>
+
+          <details>
+            <summary>Do I need a key for every dynamic QR code?</summary>
+            <p>
+              No. One key can create and manage any number of QR codes under your account —
+              you only need multiple keys if you want to isolate access between different
+              tools or environments.
+            </p>
+          </details>
+        </section>
       </div>
     </div>
   )

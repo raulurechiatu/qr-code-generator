@@ -40,7 +40,7 @@ function StaticGenerator() {
   const hasContent = !!text.trim()
 
   return (
-    <div className="app home">
+    <div className="app with-content">
       <div className="card">
         <div className="card-header">
           <h1>QR Code Generator</h1>

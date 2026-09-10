@@ -67,7 +67,7 @@
     radial-gradient(circle at 85% 90%, var(--accent-bg), transparent 45%);
 }
 
-.app.home {
+.app.with-content {
   justify-content: flex-start;
   gap: 48px;
 }
@@ -415,6 +415,28 @@ button.secondary {
 
 .content-sections details p {
   margin: 10px 0 0;
+}
+
+.content-sections code {
+  font-family: var(--mono, ui-monospace, monospace);
+  background: var(--code-bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.code-block {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-x: auto;
+  white-space: pre;
+  color: var(--text-h);
+  margin: 0 0 12px;
 }
 
 .article {
