@@ -1,51 +1,131 @@
 .app {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+  background:
+    radial-gradient(circle at 15% 10%, var(--accent-bg), transparent 45%),
+    radial-gradient(circle at 85% 90%, var(--accent-bg), transparent 45%);
+}
+
+.card {
+  width: 100%;
+  max-width: 380px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 40px 20px;
+  align-items: stretch;
+  gap: 18px;
+  padding: 36px 32px;
+  border-radius: 20px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.card-header {
   text-align: center;
 }
 
-h1 {
-  line-height: 1.2;
-  margin: 0;
+.card-header h1 {
+  font-size: 28px;
+  letter-spacing: -0.5px;
+  margin: 0 0 6px;
+}
+
+.subtitle {
+  color: var(--text);
+  font-size: 15px;
 }
 
 textarea {
   width: 100%;
-  font-size: 16px;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid var(--border, #ccc);
-  resize: vertical;
+  font: inherit;
+  font-size: 15px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  resize: none;
   box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-canvas {
-  border: 1px solid var(--border, #ccc);
-  border-radius: 6px;
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
+.qr-frame {
+  position: relative;
+  align-self: center;
+  width: 260px;
+  height: 260px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-frame.empty {
+  background: var(--code-bg);
+}
+
+.qr-frame canvas {
+  display: block;
+}
+
+.qr-frame.empty canvas {
+  display: none;
+}
+
+.qr-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text);
 }
 
 button {
-  font-size: 16px;
-  padding: 8px 20px;
-  border-radius: 6px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 12px;
   border: none;
-  background: #1a73e8;
-  color: white;
+  background: var(--accent);
+  color: #fff;
   cursor: pointer;
+  transition: filter 0.2s, transform 0.1s;
+}
+
+button:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 button:disabled {
-  background: #999;
+  background: var(--border);
+  color: var(--text);
   cursor: not-allowed;
 }
 
 .error {
-  color: #d32f2f;
-  font-size: 14px;
-  margin: 0;
+  color: #e5484d;
+  font-size: 13px;
+  margin: -8px 0 0;
+  text-align: center;
 }

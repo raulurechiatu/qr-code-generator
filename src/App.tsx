@@ -18,9 +18,14 @@ function App() {
       return
     }
 
-    QRCode.toCanvas(canvas, text, { width: 280, margin: 2 }, (err) => {
-      setError(err ? err.message : null)
-    })
+    QRCode.toCanvas(
+      canvas,
+      text,
+      { width: 260, margin: 2, color: { dark: '#1a1a2e', light: '#ffffff' } },
+      (err) => {
+        setError(err ? err.message : null)
+      },
+    )
   }, [text])
 
   const handleDownload = () => {
@@ -32,20 +37,33 @@ function App() {
     link.click()
   }
 
+  const hasContent = !!text.trim()
+
   return (
     <div className="app">
-      <h1>QR Code Generator</h1>
-      <textarea
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="Enter text or URL"
-        rows={3}
-      />
-      {error && <p className="error">{error}</p>}
-      <canvas ref={canvasRef} width={280} height={280} />
-      <button type="button" onClick={handleDownload} disabled={!text.trim() || !!error}>
-        Download PNG
-      </button>
+      <div className="card">
+        <div className="card-header">
+          <h1>QR Code Generator</h1>
+          <p className="subtitle">Turn any text or link into a scannable code</p>
+        </div>
+
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Enter text or URL"
+          rows={3}
+        />
+        {error && <p className="error">{error}</p>}
+
+        <div className={`qr-frame ${!hasContent || error ? 'empty' : ''}`}>
+          <canvas ref={canvasRef} width={260} height={260} />
+          {!hasContent && <span className="qr-placeholder">Your QR code appears here</span>}
+        </div>
+
+        <button type="button" onClick={handleDownload} disabled={!hasContent || !!error}>
+          Download PNG
+        </button>
+      </div>
     </div>
   )
 }
